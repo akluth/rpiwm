@@ -7,6 +7,15 @@
 
 int main(int argc, char *argv[])
 {
+    rpiwm_init();
+
+    exit(0);
+}
+
+
+void rpiwm_init()
+{
+
     rpiwm = (rpiwm_t*)malloc(sizeof(rpiwm_t));
     rpiwm->atoms = (rpiwm_atoms_t*)malloc(sizeof(rpiwm_atoms_t));
 
@@ -24,10 +33,20 @@ int main(int argc, char *argv[])
     rpiwm->atoms->xa_wm_protos = XInternAtom(rpiwm->display, "WM_PROTOCOLS", False);
     rpiwm->atoms->xa_wm_delete = XInternAtom(rpiwm->display, "WM_DELETE_WINDOW", False);
 
+    rpiwm_set_desktop_bgcolor(RPI_COLOR);
     rpiwm_grab_keys();
     rpiwm_event_loop();
+}
 
-    exit(0);
+
+void rpiwm_set_desktop_bgcolor(char *hex)
+{
+    XColor color;
+     XParseColor(rpiwm->display, DefaultColormap(rpiwm->display, rpiwm->screen), hex, &color);
+    XAllocColor(rpiwm->display, DefaultColormap(rpiwm->display, rpiwm->screen), &color);
+
+     XSetWindowBackground(rpiwm->display, rpiwm->root_window, color.pixel);
+    XClearWindow(rpiwm->display, rpiwm->root_window);
 }
 
 
