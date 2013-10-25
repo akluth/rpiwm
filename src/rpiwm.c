@@ -24,18 +24,24 @@ int main(int argc, char *argv[])
     rpiwm->atoms->xa_wm_protos = XInternAtom(rpiwm->display, "WM_PROTOCOLS", False);
     rpiwm->atoms->xa_wm_delete = XInternAtom(rpiwm->display, "WM_DELETE_WINDOW", False);
 
+    rpiwm_grab_keys();
     rpiwm_event_loop();
 
     exit(0);
 }
 
 
-void key_handler(XKeyEvent *event)
+void rpiwm_grab_keys()
+{
+    XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_Tab), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
+}
+
+void rpiwm_key_handler(XKeyEvent *event)
 {
     int placeholder;
     Window window;
 
-    XQueryPointer(rpiwm->display, rpiwm->root_window, &window, &rpiwm->focus_window, &placeholder, &placeholder, &placeholder, &placeholder, &placeholder);
+    XQueryPointer(rpiwm->display, rpiwm->root_window, &window, &rpiwm->focus_window, &placeholder, &placeholder, &placeholder, &placeholder, (unsigned int*)&placeholder);
 
     if (event->keycode == XKeysymToKeycode(rpiwm->display, XK_Tab) && event->state == Mod1Mask) {
         XCirculateSubwindowsUp(rpiwm->display, rpiwm->root_window);
@@ -47,7 +53,7 @@ void rpiwm_event_loop()
 {
     XEvent event;
 
-    while (0) {
+    while (1) {
         XNextEvent(rpiwm->display, &event);
 
         switch (event.type) {

@@ -29,6 +29,7 @@ static rpiwm_t *rpiwm;
 
 
 void rpiwm_event_loop();
+void rpiwm_grab_keys();
 void rpiwm_key_handler(XKeyEvent *);
 
 
