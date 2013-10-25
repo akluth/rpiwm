@@ -42,10 +42,10 @@ void rpiwm_init()
 void rpiwm_set_desktop_bgcolor(char *hex)
 {
     XColor color;
-     XParseColor(rpiwm->display, DefaultColormap(rpiwm->display, rpiwm->screen), hex, &color);
+    XParseColor(rpiwm->display, DefaultColormap(rpiwm->display, rpiwm->screen), hex, &color);
     XAllocColor(rpiwm->display, DefaultColormap(rpiwm->display, rpiwm->screen), &color);
 
-     XSetWindowBackground(rpiwm->display, rpiwm->root_window, color.pixel);
+    XSetWindowBackground(rpiwm->display, rpiwm->root_window, color.pixel);
     XClearWindow(rpiwm->display, rpiwm->root_window);
 }
 
@@ -55,6 +55,10 @@ void rpiwm_grab_keys()
     XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_Tab), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
 }
 
+
+/**
+ * Handle all pressed keys
+ **/
 void rpiwm_key_handler(XKeyEvent *event)
 {
     int placeholder;
@@ -62,6 +66,8 @@ void rpiwm_key_handler(XKeyEvent *event)
 
     XQueryPointer(rpiwm->display, rpiwm->root_window, &window, &rpiwm->focus_window, &placeholder, &placeholder, &placeholder, &placeholder, (unsigned int*)&placeholder);
 
+    // Alt+Tab = Cycle
+    //TODO: Meta+Tab = Cycle
     if (event->keycode == XKeysymToKeycode(rpiwm->display, XK_Tab) && event->state == Mod1Mask) {
         XCirculateSubwindowsUp(rpiwm->display, rpiwm->root_window);
     }
@@ -82,5 +88,4 @@ void rpiwm_event_loop()
         }
     }
 }
-
 
