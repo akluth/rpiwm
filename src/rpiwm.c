@@ -53,6 +53,7 @@ void rpiwm_set_desktop_bgcolor(char *hex)
 void rpiwm_grab_keys()
 {
     XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_Tab), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
+    XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_F12), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
 }
 
 
@@ -70,6 +71,11 @@ void rpiwm_key_handler(XKeyEvent *event)
     //TODO: Meta+Tab = Cycle
     if (event->keycode == XKeysymToKeycode(rpiwm->display, XK_Tab) && event->state == Mod1Mask) {
         XCirculateSubwindowsUp(rpiwm->display, rpiwm->root_window);
+    }
+
+    // Alt+F12: Exit WM
+    if (event->keycode == XKeysymToKeycode(rpiwm->display, XK_F12) && event->state == Mod1Mask) {
+        exit(0);
     }
 }
 
