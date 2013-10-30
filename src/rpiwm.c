@@ -55,6 +55,7 @@ void rpiwm_grab_keys()
     XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_Tab), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
     XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_F11), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
     XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_F12), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
+    XGrabButton(rpiwm->display, 1, Mod1Mask, rpiwm->root_window, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, None, None);
 }
 
 
@@ -81,9 +82,44 @@ void rpiwm_key_handler(XKeyEvent *event)
 }
 
 
+void rpiwm_button_pressed_handler(XButtonEvent *event)
+{
+    if (event->subwindow != None) {
+        XGrabPointer(rpiwm->display, event->subwindow, True, PointerMotionMask | ButtonReleaseMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+
+        XGetWindowAttributes(rpiwm->display, event->subwindow, &rpiwm->attributes);
+        rpiwm->start = *event;
+    }
+}
+
+
+void rpiwm_button_release_handler()
+{
+    rpiwm->start.subwindow = None;
+    XUngrabPointer(rpiwm->display, CurrentTime);
+}
+
+
+void rpiwm_motion_notify_handler(XButtonEvent *event)
+{
+    if (rpiwm->start.subwindow != None) {
+        int xdiff = event->x_root - rpiwm->start.x_root;
+        int ydiff = event->y_root - rpiwm->start.y_root;
+
+        XMoveResizeWindow(rpiwm->display, rpiwm->start.subwindow,
+                          rpiwm->attributes.x + (rpiwm->start.button ==1 ? xdiff : 0),
+                          rpiwm->attributes.y + (rpiwm->start.button ==1 ? ydiff : 0),
+                          MAX(1, rpiwm->attributes.width + (rpiwm->start.button ==3 ? xdiff : 0)),
+                          MAX(1, rpiwm->attributes.height + (rpiwm->start.button ==3 ? ydiff : 0)));
+    }
+}
+
+
 void rpiwm_event_loop()
 {
     XEvent event;
+
+    rpiwm->start.subwindow = None;
 
     while (1) {
         XNextEvent(rpiwm->display, &event);
@@ -91,6 +127,15 @@ void rpiwm_event_loop()
         switch (event.type) {
             case KeyPress:
                 rpiwm_key_handler(&event.xkey);
+                break;
+            case ButtonPress:
+                rpiwm_button_pressed_handler(&event.xbutton);
+                break;
+            case ButtonRelease:
+                rpiwm_button_release_handler();
+                break;
+            case MotionNotify:
+                rpiwm_motion_notify_handler(&event.xbutton);
                 break;
         }
     }

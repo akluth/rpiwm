@@ -5,6 +5,7 @@
 #include <X11/Xlib.h>
 
 #define RPI_COLOR "#BB1042"
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 typedef struct _rpiwm_atoms_t {
     Atom xa_wm_protos;
@@ -23,6 +24,9 @@ typedef struct _rpiwm_t {
     int     x, y;
 
     rpiwm_atoms_t *atoms;
+    XWindowAttributes attributes;
+
+    XButtonEvent start;
 } rpiwm_t;
 
 
