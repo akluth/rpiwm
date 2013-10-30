@@ -1,0 +1,7 @@
+#ifndef _CONFIG_H
+#define _CONFIG_H
+
+#define RPIWM_STATUSBAR_HEIGHT 10
+#define RPIWM_STATUSBAR_BACKGROUND "#60B22E"
+
+#endif

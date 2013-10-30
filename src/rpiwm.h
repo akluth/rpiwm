@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <X11/Xlib.h>
 
-#define RPI_COLOR "#BB1042"
+#define RPI_COLOR "#D6264F"
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 typedef struct _rpiwm_atoms_t {
@@ -14,6 +14,11 @@ typedef struct _rpiwm_atoms_t {
     Atom xa_wm_change_state;
 } rpiwm_atoms_t;
 
+
+typedef struct _rpiwm_status_bar_t {
+    Window bar;
+    XSetWindowAttributes attributes;
+} rpiwm_statusbar_t;
 
 typedef struct _rpiwm_t {
     Display *display;
@@ -27,6 +32,8 @@ typedef struct _rpiwm_t {
     XWindowAttributes attributes;
 
     XButtonEvent start;
+
+    rpiwm_statusbar_t statusbar;
 } rpiwm_t;
 
 
@@ -37,5 +44,6 @@ void rpiwm_event_loop();
 void rpiwm_grab_keys();
 void rpiwm_key_handler(XKeyEvent *);
 void rpiwm_set_desktop_bgcolor(char*);
+void rpiwm_statusbar_create();
 
 #endif

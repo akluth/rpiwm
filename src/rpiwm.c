@@ -3,6 +3,7 @@
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include "rpiwm.h"
+#include "config.h"
 
 
 int main(int argc, char *argv[])
@@ -15,7 +16,6 @@ int main(int argc, char *argv[])
 
 void rpiwm_init()
 {
-
     rpiwm = (rpiwm_t*)malloc(sizeof(rpiwm_t));
     rpiwm->atoms = (rpiwm_atoms_t*)malloc(sizeof(rpiwm_atoms_t));
 
@@ -34,6 +34,9 @@ void rpiwm_init()
     rpiwm->atoms->xa_wm_delete = XInternAtom(rpiwm->display, "WM_DELETE_WINDOW", False);
 
     rpiwm_set_desktop_bgcolor(RPI_COLOR);
+
+    rpiwm_statusbar_create();
+
     rpiwm_grab_keys();
     rpiwm_event_loop();
 }
@@ -47,6 +50,21 @@ void rpiwm_set_desktop_bgcolor(char *hex)
 
     XSetWindowBackground(rpiwm->display, rpiwm->root_window, color.pixel);
     XClearWindow(rpiwm->display, rpiwm->root_window);
+}
+
+
+void rpiwm_statusbar_create()
+{
+    XColor color;
+    XParseColor(rpiwm->display, DefaultColormap(rpiwm->display, rpiwm->screen), RPIWM_STATUSBAR_BACKGROUND, &color);
+    XAllocColor(rpiwm->display, DefaultColormap(rpiwm->display, rpiwm->screen), &color);
+
+    rpiwm->statusbar.attributes.border_pixel = BlackPixel(rpiwm->display, rpiwm->screen);
+    rpiwm->statusbar.bar = XCreateWindow(rpiwm->display, rpiwm->root_window,
+            -1, -1, DisplayWidth(rpiwm->display, rpiwm->screen), RPIWM_STATUSBAR_HEIGHT, 1, CopyFromParent, InputOutput, CopyFromParent, CWBorderPixel, &rpiwm->statusbar.attributes);
+    XSelectInput(rpiwm->display, rpiwm->statusbar.bar, ExposureMask | KeyPressMask);
+    XSetWindowBackground(rpiwm->display, rpiwm->statusbar.bar, color.pixel);
+    XMapWindow(rpiwm->display, rpiwm->statusbar.bar);
 }
 
 
