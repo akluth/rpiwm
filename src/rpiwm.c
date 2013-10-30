@@ -53,6 +53,7 @@ void rpiwm_set_desktop_bgcolor(char *hex)
 void rpiwm_grab_keys()
 {
     XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_Tab), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
+    XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_F11), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
     XGrabKey(rpiwm->display, XKeysymToKeycode(rpiwm->display, XK_F12), Mod1Mask, rpiwm->root_window, True, GrabModeAsync, GrabModeAsync);
 }
 

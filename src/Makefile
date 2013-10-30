@@ -6,7 +6,7 @@ LD = gcc
 XROOT    = /usr/X11R6
 XINCLPATH = -I$(XROOT)/include
 XLDPATH   = -L$(XROOT)/lib
-CFLAGS = -Wall -I include -lX11
+CFLAGS = -Wall -I include -lX11 -O3
 
 rpiwm: $(OBJS)
 	$(LD) $(CFLAGS) -o $@ $^
