@@ -23,9 +23,9 @@ Add it to your `.xinitrc`:
 
 ...not much. Currently you can do the following:
 
-    `Alt+Tab` - circulate through windows
-    `Alt+Mouse1` - move windows
-    `Alt+F12` - exit rpiwm
+* `Alt+Tab` - circulate through windows
+* `Alt+Mouse1` - move windows
+* `Alt+F12` - exit rpiwm
 
 In the future the ability to tile the windows just as in awesome will be available.
 
