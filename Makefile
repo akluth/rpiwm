@@ -3,5 +3,7 @@ all: rpiwm
 rpiwm:
 	$(MAKE) -C src
 
-.PHONY: all rpiwm
+clean:
+	rm src/*.o
 
+.PHONY: all rpiwm clean
